@@ -56,6 +56,9 @@ Plugin 'git://github.com/xolox/vim-lua-ftplugin.git'
 " Full path fuzzy file, buffer, mru, tag, ... finder for Vim. 
 Plugin 'https://github.com/kien/ctrlp.vim.git'
 
+" Vim plugin for the_silver_searcher, 'ag', a replacement for the Perl module / CLI script 'ack'
+Plugin 'https://github.com/rking/ag.vim.git'
+
 " colors
 "Plugin "vim-colors-solarized"
 

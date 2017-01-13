@@ -1,10 +1,8 @@
-
-
 " enable vundle
 set nocompatible               " be iMproved
 filetype off                   " required!
 
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 "============================================
@@ -61,6 +59,9 @@ Plugin 'https://github.com/rking/ag.vim.git'
 
 " colors
 "Plugin "vim-colors-solarized"
+
+" golang
+Plugin 'fatih/vim-go'
 
 call vundle#end()
 
@@ -213,3 +214,7 @@ autocmd BufRead,BufNewFile *.rst setlocal spell
  let g:airline_powerline_fonts = 1
  nnoremap <A-right> :bnext<CR>
  nnoremap <A-left> :bprev<CR>
+
+" >>> golang <<<
+" Enable goimports to automatically insert import paths instead of gofmt
+let g:go_fmt_command = "goimports"

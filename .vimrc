@@ -13,55 +13,44 @@ Plugin 'gmarik/vundle'
 "Plugin 'The-NERD-tree'
 Plugin 'Tagbar'
 Plugin 'TaskList.vim'
-"Plugin 'compview'
-"Plugin 'EasyMotion'
-Plugin 'EasyGrep'
-"Plugin 'ZoomWin'
-"Plugin 'unimpaired.vim'
-Plugin 'vcscommand.vim'
-Plugin 'Gundo'
-
-" doesn't exist anymore
-" Plugin 'https://github.com/sontek/minibufexpl.vim'
+Plugin 'https://github.com/sjl/gundo.vim.git'
 
 " Lean & mean status/tabline for vim that's light as air.
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+
+" git
+Plugin 'https://github.com/tpope/vim-fugitive.git'
+"  Plugin 'extradite.vim'
 
 " Snippets
 Plugin 'git://github.com/SirVer/ultisnips.git'
 
 " python
-Plugin 'pyflakes.vim'
 Plugin 'pylint.vim'
 Plugin 'python.vim--Vasiliev'
-Plugin 'python_ifold'
-Plugin 'SuperTab'
 Plugin 'virtualenv.vim'
 Plugin 'py_jump.vim'
 Plugin 'python.vim'
 
-" autocompletion
-Plugin 'git://github.com/davidhalter/jedi-vim.git'
-
-" git
-Plugin 'fugitive.vim'
-Plugin 'extradite.vim'
-
 " lua support
-Plugin 'git://github.com/xolox/vim-misc.git'
-Plugin 'git://github.com/xolox/vim-lua-ftplugin.git'
+"  Plugin 'git://github.com/xolox/vim-misc.git'
+"  Plugin 'git://github.com/xolox/vim-lua-ftplugin.git'
 
 " Full path fuzzy file, buffer, mru, tag, ... finder for Vim. 
-Plugin 'https://github.com/kien/ctrlp.vim.git'
+Plugin 'https://github.com/ctrlpvim/ctrlp.vim.git'
 
 " Vim plugin for the_silver_searcher, 'ag', a replacement for the Perl module / CLI script 'ack'
 Plugin 'https://github.com/rking/ag.vim.git'
 
-" colors
-"Plugin "vim-colors-solarized"
-
 " golang
 Plugin 'fatih/vim-go'
+
+" taskworrior
+"   Plugin 'https://github.com/blindFS/vim-taskwarrior.git'
+
+" Asynchronous Lint Engine
+Plugin 'w0rp/ale'
 
 call vundle#end()
 
@@ -173,7 +162,10 @@ set visualbell
  set directory+=,~/.vim/tmp,$TMP
 
 " Gundo
- nnoremap <F5> :GundoToggle<CR>
+nnoremap <F5> :GundoToggle<CR>
+if has('python3')
+  let g:gundo_prefer_python3 = 1 " anything else breaks on Ubuntu 16.04+
+endif
 
 ">>> PYTHON <<<
 
@@ -194,19 +186,12 @@ set visualbell
 " tabulation
  au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql 
 
-" omnicompletion
-" autocmd FileType python set omnifunc=pythoncomplete#Complete
-" set completeopt=preview,longest,menu
-" set completefunc=pythoncomplete#Complete
-
 " >>> END PYTHON <<<
-
-" jedi options
-let g:jedi#use_tabs_not_buffers = 0
 
 " enable spell checking for text files
 autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd BufRead,BufNewFile *.rst setlocal spell
+set spelllang=pl,en
 
 " vim-airline options
  let g:airline#extensions#tabline#enabled = 1
@@ -218,3 +203,57 @@ autocmd BufRead,BufNewFile *.rst setlocal spell
 " >>> golang <<<
 " Enable goimports to automatically insert import paths instead of gofmt
 let g:go_fmt_command = "goimports"
+let g:go_fmt_experimental = 1
+" let g:go_auto_type_info = 1
+
+" Ag
+let g:ag_working_path_mode="r"
+let g:ag_prg="ag --silent --vimgrep"
+
+" Tagbar
+"  golang
+let g:tagbar_type_go = {
+    \ 'ctagstype': 'go',
+    \ 'kinds' : [
+        \'p:package',
+        \'f:function',
+        \'v:variables',
+        \'t:type',
+        \'c:const'
+    \]
+\}
+
+" ctrlp
+let g:ctrlp_extensions = ['tag']
+if executable('rg')
+  " Use rg over grep
+  set grepprg=rg\ --vimgrep\ --no-heading
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'rg %s --no-ignore --files -g "" '
+  " rg is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+elseif executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+" Go lang
+autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4 
+autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
+autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
+autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
+autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
+
+" ALE
+let g:ale_fixers = {
+\    'python': ['autopep8'],
+\}
+
+let g:ale_linters = {
+\   'go': [],
+\}

@@ -151,10 +151,6 @@ set visualbell
 " keep 100 lines of command line history
  set history=100		
 
-" supertab , set first match
- let g:SuperTabDefaultCompletionType = "context"
- set completeopt=menu
-
 " toggle between paste and normal: for 'safer' pasting from keyboard
  set pastetoggle=<F10> 
 
@@ -200,12 +196,6 @@ set spelllang=pl,en
  nnoremap <A-right> :bnext<CR>
  nnoremap <A-left> :bprev<CR>
 
-" >>> golang <<<
-" Enable goimports to automatically insert import paths instead of gofmt
-let g:go_fmt_command = "goimports"
-let g:go_fmt_experimental = 1
-" let g:go_auto_type_info = 1
-
 " Ag
 let g:ag_working_path_mode="r"
 let g:ag_prg="ag --silent --vimgrep"
@@ -243,6 +233,10 @@ elseif executable('ag')
 endif
 
 " Go lang
+" Enable goimports to automatically insert import paths instead of gofmt
+let g:go_fmt_command = "goimports"
+let g:go_fmt_experimental = 1
+" let g:go_auto_type_info = 1
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4 
 autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
 autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')

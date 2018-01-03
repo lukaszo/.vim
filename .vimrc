@@ -52,6 +52,12 @@ Plugin 'fatih/vim-go'
 " Asynchronous Lint Engine
 Plugin 'w0rp/ale'
 
+" AutoCompletion
+Plugin 'Shougo/deoplete.nvim'
+Plugin 'roxma/nvim-yarp'
+Plugin 'roxma/vim-hug-neovim-rpc'
+Plugin 'zchee/deoplete-go'
+
 call vundle#end()
 
 "============================================
@@ -243,6 +249,13 @@ autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit'
 autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
 
+" higlighting
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_types = 1
+
 " ALE
 let g:ale_fixers = {
 \    'python': ['autopep8'],
@@ -251,3 +264,11 @@ let g:ale_fixers = {
 let g:ale_linters = {
 \   'go': [],
 \}
+" Enable integration with airline.
+let g:airline#extensions#ale#enabled = 1
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+autocmd CompleteDone * silent! pclose!
+let g:deoplete#ignore_sources = {}
+let g:deoplete#ignore_sources._ = ['buffer']

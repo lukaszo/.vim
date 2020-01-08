@@ -1,75 +1,70 @@
 " enable vundle
 set nocompatible               " be iMproved
-filetype off                   " required!
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-"============================================
+call plug#begin('~/.vim/plugged')
 
-" let Vundle manage Vundle
-Plugin 'gmarik/vundle'
-
-"Plugin 'The-NERD-tree'
-Plugin 'Tagbar'
-Plugin 'TaskList.vim'
-Plugin 'https://github.com/sjl/gundo.vim.git'
+"Plug 'The-NERD-tree'
+Plug 'majutsushi/tagbar'
+Plug 'https://github.com/sjl/gundo.vim.git'
+Plug 'SirVer/ultisnips'
 
 " Lean & mean status/tabline for vim that's light as air.
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " git
-Plugin 'https://github.com/tpope/vim-fugitive.git'
-"  Plugin 'extradite.vim'
-
-" Snippets
-Plugin 'git://github.com/SirVer/ultisnips.git'
+Plug 'https://github.com/tpope/vim-fugitive.git'
+"  Plug 'extradite.vim'
 
 " python
-Plugin 'pylint.vim'
-Plugin 'python.vim--Vasiliev'
-Plugin 'virtualenv.vim'
-Plugin 'py_jump.vim'
-Plugin 'python.vim'
+Plug 'Vimjas/vim-python-pep8-indent'
+" had to install it manually https://github.com/psf/black/issues/672#issuecomment-492683850
+Plug 'psf/black'
 
 " lua support
-"  Plugin 'git://github.com/xolox/vim-misc.git'
-"  Plugin 'git://github.com/xolox/vim-lua-ftplugin.git'
+"  Plug 'git://github.com/xolox/vim-misc.git'
+"  Plug 'git://github.com/xolox/vim-lua-ftplugin.git'
 
 " Full path fuzzy file, buffer, mru, tag, ... finder for Vim. 
-Plugin 'https://github.com/ctrlpvim/ctrlp.vim.git'
+Plug 'https://github.com/ctrlpvim/ctrlp.vim.git'
 
 " Vim plugin for the_silver_searcher, 'ag', a replacement for the Perl module / CLI script 'ack'
-Plugin 'https://github.com/rking/ag.vim.git'
+Plug 'https://github.com/rking/ag.vim.git'
 
 " golang
-Plugin 'fatih/vim-go'
+Plug 'fatih/vim-go'
+
+" dart
+Plug 'dart-lang/dart-vim-plugin'
+
+" flutter
+Plug 'thosakwe/vim-flutter'
 
 " taskworrior
-"   Plugin 'https://github.com/blindFS/vim-taskwarrior.git'
+"   Plug 'https://github.com/blindFS/vim-taskwarrior.git'
 
 " Asynchronous Lint Engine
-Plugin 'w0rp/ale'
+Plug 'dense-analysis/ale'
 
 " AutoCompletion
-Plugin 'Shougo/deoplete.nvim'
-Plugin 'roxma/nvim-yarp'
-Plugin 'roxma/vim-hug-neovim-rpc'
-Plugin 'zchee/deoplete-go'
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'zchee/deoplete-go'
+Plug 'https://github.com/Shougo/deoplete-clangx'
 
-call vundle#end()
+call plug#end()
 
 "============================================
-
-" Automatically detect file types.
- filetype plugin indent on
 
 " Do not close buffers
  set hidden
-
-" Syntax highlighting
- syntax on
 
 " allow backspacing over everything in insert mode
  set backspace=indent,eol,start
@@ -169,6 +164,11 @@ if has('python3')
   let g:gundo_prefer_python3 = 1 " anything else breaks on Ubuntu 16.04+
 endif
 
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
 ">>> PYTHON <<<
 
 " pylint
@@ -187,6 +187,9 @@ endif
 
 " tabulation
  au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql 
+
+" autoformat code on write
+ autocmd BufWritePre *.py execute ':Black'
 
 " >>> END PYTHON <<<
 
@@ -207,17 +210,7 @@ let g:ag_working_path_mode="r"
 let g:ag_prg="ag --silent --vimgrep"
 
 " Tagbar
-"  golang
-let g:tagbar_type_go = {
-    \ 'ctagstype': 'go',
-    \ 'kinds' : [
-        \'p:package',
-        \'f:function',
-        \'v:variables',
-        \'t:type',
-        \'c:const'
-    \]
-\}
+nmap <F8> :TagbarToggle<CR>
 
 " ctrlp
 let g:ctrlp_extensions = ['tag']
@@ -249,6 +242,10 @@ autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit'
 autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
 
+" dart
+let g:dart_format_on_save=1
+let g:dart_style_guide=1
+
 " higlighting
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
@@ -262,8 +259,9 @@ let g:ale_fixers = {
 \}
 
 let g:ale_linters = {
-\   'go': [],
+\ 'go': ['gopls'],
 \}
+
 " Enable integration with airline.
 let g:airline#extensions#ale#enabled = 1
 

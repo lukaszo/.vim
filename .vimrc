@@ -270,5 +270,4 @@ let g:airline#extensions#ale#enabled = 1
 " deoplete
 let g:deoplete#enable_at_startup = 1
 autocmd CompleteDone * silent! pclose!
-let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['buffer']
+call deoplete#custom#option('ignore_sources', {'_': ['buffer']})

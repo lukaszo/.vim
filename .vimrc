@@ -9,10 +9,13 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-"Plug 'The-NERD-tree'
+Plug 'preservim/nerdtree' |
+  \ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'majutsushi/tagbar'
 Plug 'https://github.com/sjl/gundo.vim.git'
 Plug 'SirVer/ultisnips'
+" Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets'
 
 " Lean & mean status/tabline for vim that's light as air.
 Plug 'vim-airline/vim-airline'
@@ -58,6 +61,17 @@ Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'zchee/deoplete-go'
 Plug 'https://github.com/Shougo/deoplete-clangx'
+
+" JSON
+Plug 'https://github.com/elzr/vim-json'
+
+" Grakn/Graql
+Plug 'mcmire/vim-grakn'
+
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"Plug 'junegunn/fzf.vim'
+
+Plug 'https://github.com/rhysd/vim-grammarous'
 
 call plug#end()
 
@@ -197,6 +211,10 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd BufRead,BufNewFile *.rst setlocal spell
 set spelllang=pl,en
+" + language tool
+let g:grammarous#default_comments_only_filetypes = {
+            \ '*' : 1, 'help' : 0, 'markdown' : 0,
+	    \ }
 
 " vim-airline options
  let g:airline#extensions#tabline#enabled = 1
@@ -262,12 +280,18 @@ let g:ale_fixers = {
 
 let g:ale_linters = {
 \ 'go': ['gopls'],
+\ 'dart': ['analysis_server'],
 \}
 
 " Enable integration with airline.
 let g:airline#extensions#ale#enabled = 1
+let g:ale_hover_to_preview = 1
 
 " deoplete
 let g:deoplete#enable_at_startup = 1
 autocmd CompleteDone * silent! pclose!
 call deoplete#custom#option('ignore_sources', {'_': ['buffer']})
+call deoplete#custom#option('sources', {'_': ['ale']})
+
+" json
+com! FormatJSON %!jq .

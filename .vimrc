@@ -73,6 +73,9 @@ Plug 'mcmire/vim-grakn'
 
 Plug 'https://github.com/rhysd/vim-grammarous'
 
+" Generates toc for md files
+Plug 'mzlogin/vim-markdown-toc'
+
 call plug#end()
 
 "============================================
@@ -281,6 +284,7 @@ let g:ale_fixers = {
 let g:ale_linters = {
 \ 'go': ['gopls'],
 \ 'dart': ['analysis_server'],
+\ 'python': ['pyflake3'],
 \}
 
 " Enable integration with airline.

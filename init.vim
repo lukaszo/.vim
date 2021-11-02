@@ -1,16 +1,13 @@
-" enable vundle
-set nocompatible               " be iMproved
-
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 
-Plug 'preservim/nerdtree' |
-  \ Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'preservim/nerdtree' "|
+"  \ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'majutsushi/tagbar'
 Plug 'https://github.com/sjl/gundo.vim.git'
 
@@ -85,6 +82,17 @@ Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
 
 Plug 'neovim/nvim-lspconfig'
 
+Plug 'sheerun/vim-polyglot'
+
+" colorscheme
+
+Plug 'https://github.com/dracula/vim'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'mhartington/oceanic-next'
+Plug 'rakr/vim-one'
+Plug 'joshdick/onedark.vim'
+Plug 'gryf/wombat256grf'
+
 
 call plug#end()
 
@@ -108,12 +116,8 @@ call plug#end()
 " do incremental searching
  set incsearch		
 
-" Color Scheme
- if has("gui_running")
-    colorscheme wombat
- else
-    colorscheme wombat256
- endif
+set termguicolors
+colorscheme wombat256grf
 
 " do not keep a backup file, use versions instead
  if has("vms")

@@ -55,10 +55,6 @@ Plug 'akinsho/flutter-tools.nvim'
 " Asynchronous Lint Engine
 Plug 'dense-analysis/ale'
 
-" AutoCompletion
-"Plug 'Shougo/deoplete.nvim'
-"Plug 'https://github.com/Shougo/deoplete-clangx'
-
 " JSON
 Plug 'https://github.com/elzr/vim-json'
 
@@ -269,6 +265,7 @@ endif
 " Enable goimports to automatically insert import paths instead of gofmt
 let g:go_fmt_command = "goimports"
 let g:go_fmt_experimental = 1
+let g:go_doc_keywordprg_enabled = 0
 " Automatically get signature/type info for object under curso
 let g:go_auto_type_info = 1
 let g:go_def_mode='gopls'
@@ -295,7 +292,7 @@ let g:ale_fixers = {
 \}
 
 let g:ale_linters = {
-\ 'go': ['gopls'],
+\ 'go': [],
 \ 'dart': [],
 \ 'python': ['pyflake3'],
 \}
@@ -309,9 +306,38 @@ com! FormatJSON %!jq .
 
 lua <<EOF
 require("flutter-tools").setup{
-  flutter_path = "/home/slm/snap/flutter/common/flutter/bin/flutter"
+  flutter_path = "/home/slm/snap/flutter/common/flutter/bin/flutter",
+  closing_tags = {
+    prefix = ">>> ", -- character to use for close tag e.g. > Widget
+    enabled = true, -- set to false to disable
+  },
 }
-require'lspconfig'.gopls.setup{}
-require'lspconfig'.gopls.setup{}
+
+require'lspconfig'.gopls.setup{
+  settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+          nilness = true,
+          shadow = true,
+          unusedwrite = true,
+        },
+        staticcheck = true,
+      },
+    },
+}
+
+-- not needed, done by flutter-tools
+-- require'lspconfig'.dartls.setup{}
 EOF
+
+" LSP
+ " See the definition
+nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
+ " Jump to definition
+nnoremap gd <Cmd>lua vim.lsp.buf.definition()<CR>
+ " Open code actions using the default lsp UI, if you want to change this please see the plugins above
+nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
+ " Open code actions for the selected visual range
+xnoremap <leader>ca <Cmd>lua vim.lsp.buf.range_code_action()<CR>
 

@@ -55,10 +55,6 @@ Plug 'akinsho/flutter-tools.nvim'
 " Asynchronous Lint Engine
 Plug 'dense-analysis/ale'
 
-" AutoCompletion
-"Plug 'Shougo/deoplete.nvim'
-"Plug 'https://github.com/Shougo/deoplete-clangx'
-
 " JSON
 Plug 'https://github.com/elzr/vim-json'
 
@@ -93,8 +89,14 @@ Plug 'rakr/vim-one'
 Plug 'joshdick/onedark.vim'
 Plug 'gryf/wombat256grf'
 
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 call plug#end()
+
+function OpenMarkdownPreview (url)
+  execute "silent ! chromium --new-window " . a:url
+endfunction
+let g:mkdp_browserfunc = 'OpenMarkdownPreview'
 
 "============================================
 
@@ -270,6 +272,7 @@ endif
 " Enable goimports to automatically insert import paths instead of gofmt
 let g:go_fmt_command = "goimports"
 let g:go_fmt_experimental = 1
+let g:go_doc_keywordprg_enabled = 0
 " Automatically get signature/type info for object under curso
 let g:go_auto_type_info = 1
 let g:go_def_mode='gopls'
@@ -298,7 +301,7 @@ let g:ale_fixers = {
 \}
 
 let g:ale_linters = {
-\ 'go': ['gopls'],
+\ 'go': [],
 \ 'dart': [],
 \ 'python': ['pyflake3'],
 \}
@@ -312,20 +315,12 @@ com! FormatJSON %!jq .
 
 lua <<EOF
 require("flutter-tools").setup{
-  flutter_path = "/home/slm/snap/flutter/common/flutter/bin/flutter"
+  flutter_path = "/home/slm/snap/flutter/common/flutter/bin/flutter",
+  closing_tags = {
+    prefix = ">>> ", -- character to use for close tag e.g. > Widget
+    enabled = true, -- set to false to disable
+  },
 }
-require'lspconfig'.gopls.setup {
-    cmd = {"gopls", "serve"},
-    filetypes = {"go", "gomod"},
-    settings = {
-      gopls = {
-        analyses = {
-          unusedparams = true,
-        },
-        staticcheck = true,
-      },
-    },
-  }
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -357,13 +352,38 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-
 end
+
+require'lspconfig'.gopls.setup {
+  on_attach = on_attach,
+  cmd = {"gopls", "serve"},
+  filetypes = {"go", "gomod"},
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+        nilness = true,
+        shadow = true,
+        unusedwrite = true,
+      },
+      staticcheck = true,
+    },
+  },
+}
+
 require'lspconfig'.solargraph.setup{
   on_attach = on_attach,
  -- cmd = {'bundle', 'exec', 'solargraph', 'stdio'},
 }
 
 
+-- not needed, done by flutter-tools
+-- require'lspconfig'.dartls.setup{}
 EOF
+
+" LSP
+ " Open code actions using the default lsp UI, if you want to change this please see the plugins above
+nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
+ " Open code actions for the selected visual range
+xnoremap <leader>ca <Cmd>lua vim.lsp.buf.range_code_action()<CR>
 

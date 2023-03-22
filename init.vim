@@ -9,7 +9,7 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'preservim/nerdtree' "|
 "  \ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'majutsushi/tagbar'
-Plug 'https://github.com/sjl/gundo.vim.git'
+Plug 'mbbill/undotree'
 
 "Plug 'SirVer/ultisnips'
 " Snippets are separated from the engine. Add this if you want them:
@@ -76,6 +76,8 @@ Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 
 Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
 
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'sheerun/vim-polyglot'
@@ -90,6 +92,9 @@ Plug 'joshdick/onedark.vim'
 Plug 'gryf/wombat256grf'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+Plug 'editorconfig/editorconfig-vim'
+Plug 'ryanoasis/vim-devicons'
 
 " For chatgpt plugins
 Plug 'MunifTanjim/nui.nvim'
@@ -197,28 +202,11 @@ set visualbell
  set pastetoggle=<F10> 
 
 " keep swap files in same directory
- set directory+=,~/.vim/tmp,$TMP
+ set directory=,~/.vim/tmp,$TMP
 
-" Gundo
-nnoremap <F5> :GundoToggle<CR>
-if has('python3')
-  let g:gundo_prefer_python3 = 1 " anything else breaks on Ubuntu 16.04+
-endif
-
-" UltiSnips
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+nnoremap <F5> :UndotreeToggle<CR>
 
 ">>> PYTHON <<<
-
-" pylint
- autocmd FileType python compiler pylint
- " Don't run on write
- let g:pylint_onwrite = 0
-
-" pyflakes
- let g:pyflakes_use_quickfix = 0
 
 " python_ifold
  let g:ifold_mode=2
@@ -312,7 +300,7 @@ let g:ale_fixers = {
 let g:ale_linters = {
 \ 'go': [],
 \ 'dart': [],
-\ 'python': ['pyflake3'],
+\ 'python': ['jedils'],
 \ 'ruby': [],
 \}
 
@@ -404,6 +392,7 @@ require"chatgpt".setup{
   }
 }
 
+require'lspconfig'.csharp_ls.setup{}
 
 -- not needed, done by flutter-tools
 -- require'lspconfig'.dartls.setup{}

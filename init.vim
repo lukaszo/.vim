@@ -91,6 +91,15 @@ Plug 'gryf/wombat256grf'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
+" For chatgpt plugins
+Plug 'MunifTanjim/nui.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'jackMort/ChatGPT.nvim'
+
+" For copilot
+Plug 'github/copilot.vim'
+
 call plug#end()
 
 function OpenMarkdownPreview (url)
@@ -304,6 +313,7 @@ let g:ale_linters = {
 \ 'go': [],
 \ 'dart': [],
 \ 'python': ['pyflake3'],
+\ 'ruby': [],
 \}
 
 " Enable integration with airline.
@@ -374,6 +384,24 @@ require'lspconfig'.gopls.setup {
 require'lspconfig'.solargraph.setup{
   on_attach = on_attach,
  -- cmd = {'bundle', 'exec', 'solargraph', 'stdio'},
+}
+
+require"chatgpt".setup{
+ --optional configuration
+  keymaps = {
+    submit = "<C-l>",
+    close = { "<C-c>" },
+    yank_last = "<C-y>",
+    yank_last_code = "<C-k>",
+    scroll_up = "<C-u>",
+    scroll_down = "<C-d>",
+    toggle_settings = "<C-o>",
+    new_session = "<C-n>",
+    cycle_windows = "<Tab>",
+    select_session = "<Space>",
+    rename_session = "r",
+    delete_session = "d",
+  }
 }
 
 
